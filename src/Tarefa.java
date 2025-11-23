@@ -21,7 +21,7 @@ public class Tarefa{
         return this.descricao;
     }
  
-    public int getPrazo(){
+    public Date getPrazo(){
         return this.prazo;
     }
 

@@ -1,22 +1,22 @@
 import java.util.Date;
 
-public class SessaoEstudo{
-    private int duracaoMinitos;
+public class SessaoEstudo {
+    private int duracaoMinutos;
     private Date dataHora;
     private Materia materia;
 
     public SessaoEstudo(int duracao, Date dataHora, Materia materia){
-        this.duracaoMinitos = duracao;
-        this.dataHora = dataHora; 
+        this.duracaoMinutos = duracao;
+        this.dataHora = dataHora;
         this.materia = materia;
     }
 
     public void iniciar(){
-        System.out.println("Iniciando a sessão de " + this.materia + " " + this.duracaoMinitos + "m.");
+        System.out.println("Sessão de " + this.materia.getNome() + " iniciada (" + this.duracaoMinutos + " min).");
     }
 
     public void pausar(){
-        System.out.println("Sessão Pausada");
+        System.out.println("Sessão finalizada/pausada com sucesso.");
     }
 
     public Materia getMateria(){
