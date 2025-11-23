@@ -42,6 +42,7 @@ public class Menu {
                     cadUsr();
             case 0 -> {
                 System.out.println("Encerrando...");
+                System.exit(0);
                 yield null;
             }
             default -> {
