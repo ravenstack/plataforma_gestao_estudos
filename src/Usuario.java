@@ -21,6 +21,25 @@ public class Usuario {
         this.sessoes = new ArrayList<>();
     }
 
+    public void initMateriasPadrao(){
+        String[] materiasPadrao = {
+                "Matemática",
+                "Português",
+                "Inglês",
+                "História",
+                "Geografia",
+                "Biologia",
+                "Física",
+                "Química",
+                "Sociologia",
+                "Filosofia"
+        };
+
+        for (String nome : materiasPadrao) {
+            this.addMateria(new Materia(nome));
+        }
+    }
+
     // autenticacao
     public boolean auth(String email, String senha){
         return this.email.equals(email) && this.senha.equals(senha);
