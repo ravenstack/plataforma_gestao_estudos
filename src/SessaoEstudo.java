@@ -22,4 +22,12 @@ public class SessaoEstudo {
     public Materia getMateria(){
         return this.materia;
     }
+
+    public int getDuracaoMinutos() {
+        return this.duracaoMinutos;
+    }
+
+    public Date getDataHora() {
+        return this.dataHora;
+    }
 }
