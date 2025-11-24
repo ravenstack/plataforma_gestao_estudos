@@ -8,6 +8,7 @@ public class Menu {
     static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
     private static void prtMenuLogin(){
+        clearScreen();
         System.out.println("\n===== BEM-VINDO =====");
         System.out.println("1. Já tenho conta (Login)");
         System.out.println("2. Cadastrar nova conta");
@@ -16,6 +17,7 @@ public class Menu {
     }
 
     private static void prtMainMenu(){
+        clearScreen();
         System.out.println("\n===== MENU PRINCIPAL =====");
         System.out.println("1. Cadastrar matéria");
         System.out.println("2. Adicionar tarefa");
@@ -32,6 +34,7 @@ public class Menu {
 
         int escolha = sc.nextInt();
         sc.nextLine(); // Limpar buffer
+        clearScreen();
 
         return switch (escolha) {
             case 1 ->
@@ -58,6 +61,7 @@ public class Menu {
         int opcao = sc.nextInt();
         sc.nextLine();
 
+        clearScreen();
         return switch (opcao) {
             case 1 -> {
                 cadMateria(user);
@@ -312,5 +316,10 @@ public class Menu {
 
     public static void sair(){
         sc.close();
+    }
+
+    public static void clearScreen() {
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
     }
 }
