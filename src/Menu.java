@@ -2,6 +2,9 @@ import java.text.SimpleDateFormat;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.Scanner;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class Menu {
     static Scanner sc = new Scanner(System.in);
@@ -23,6 +26,10 @@ public class Menu {
         System.out.println("4. Registrar data de prova");
         System.out.println("5. Iniciar modo foco (Pomodoro)");
         System.out.println("6. Exibir resumo geral");
+        System.out.println("7. Concluir tarefa pendente");
+        System.out.println("8. Ver alertas de prazos próximos");
+        System.out.println("9. Sugestão de rotina de estudos");
+        System.out.println("10. Compartilhar cronograma");
         System.out.println("0. Sair");
         System.out.print("Escolha: ");
     }
@@ -81,6 +88,22 @@ public class Menu {
             }
             case 6 -> {
                 resumo(user);
+                yield true;
+            }
+            case 7 -> {
+                concluirTarefa(user);
+                yield true;
+            }
+            case 8 -> {
+                exibirAlertas(user);
+                yield true;
+            }
+            case 9 -> {
+                sugestaoRotina(user);
+                yield true;
+            }
+            case 10 -> {
+                compartilharCronograma(user);
                 yield true;
             }
             case 0 -> {
@@ -274,6 +297,185 @@ public class Menu {
                 double horas = minutos / 60.0;
                 System.out.printf("%s: %.2f h\n", materia, horas);
             });
+        }
+    }
+private static void concluirTarefa(Usuario user) {
+        List<Integer> indicesPendentes = new ArrayList<>();
+
+        System.out.println("===== TAREFAS PENDENTES =====");
+        for (int i = 0; i < user.getTarefas().size(); i++) {
+            Tarefa tarefa = user.getTarefas().get(i);
+            if (!tarefa.isConcluido()) {
+                indicesPendentes.add(i);
+                System.out.printf("%d. [%d★] %s | Prazo: %s\n", indicesPendentes.size(), tarefa.getPrioridade(), tarefa.getDescricao(), sdf.format(tarefa.getPrazo()));
+            }
+        }
+
+        if (indicesPendentes.isEmpty()) {
+            System.out.println("Nenhuma tarefa pendente encontrada.");
+            return;
+        }
+
+        System.out.print("Digite o número da tarefa para concluir: ");
+        int escolha = sc.nextInt();
+        sc.nextLine();
+
+        if (escolha < 1 || escolha > indicesPendentes.size()) {
+            System.out.println("Opção inválida. Voltando ao menu.");
+            return;
+        }
+
+        user.concluirTarefa(indicesPendentes.get(escolha - 1));
+        System.out.println("Tarefa marcada como concluída!");
+    }
+
+    private static void exibirAlertas(Usuario user) {
+        Date agora = new Date();
+        long limiteTarefasMillis = 72L * 60 * 60 * 1000; // 72 horas
+        long limiteProvasMillis = 7L * 24 * 60 * 60 * 1000; // 7 dias
+
+        List<Tarefa> tarefasCriticas = new ArrayList<>();
+        for (Tarefa t : user.getTarefas()) {
+            if (!t.isConcluido() && t.getPrazo().after(agora) && (t.getPrazo().getTime() - agora.getTime()) <= limiteTarefasMillis) {
+                tarefasCriticas.add(t);
+            }
+        }
+        tarefasCriticas.sort(Comparator.comparing(Tarefa::getPrazo));
+
+        List<ProvaAgenda> provasProximas = new ArrayList<>();
+        for (Materia materia : user.getMaterias()) {
+            for (Prova prova : materia.getProvas()) {
+                if (prova.getData().after(agora) && (prova.getData().getTime() - agora.getTime()) <= limiteProvasMillis) {
+                    provasProximas.add(new ProvaAgenda(materia, prova));
+                }
+            }
+        }
+        provasProximas.sort(Comparator.comparing(p -> p.prova.getData()));
+
+        System.out.println("===== ALERTAS =====");
+        if (tarefasCriticas.isEmpty() && provasProximas.isEmpty()) {
+            System.out.println("Nenhum prazo crítico nas próximas horas/dias.");
+            return;
+        }
+
+        if (!tarefasCriticas.isEmpty()) {
+            System.out.println("\nTarefas para concluir em até 72h:");
+            for (Tarefa t : tarefasCriticas) {
+                System.out.printf("- [%d★] %s | Prazo: %s\n", t.getPrioridade(), t.getDescricao(), sdf.format(t.getPrazo()));
+            }
+        }
+
+        if (!provasProximas.isEmpty()) {
+            System.out.println("\nProvas nos próximos 7 dias:");
+            for (ProvaAgenda agenda : provasProximas) {
+                System.out.printf("- %s | Prova: %s | Data: %s\n", agenda.materia.getNome(), agenda.prova.getDescricao(), sdf.format(agenda.prova.getData()));
+            }
+        }
+    }
+
+    private static void sugestaoRotina(Usuario user) {
+        if (user.getMaterias().isEmpty()) {
+            System.out.println("Cadastre ao menos uma matéria para receber sugestões.");
+            return;
+        }
+
+        Map<String, Integer> minutosPorMateria = user.calcularMinutosPorMateria();
+
+        Materia menosEstudada = null;
+        int minutosMenor = Integer.MAX_VALUE;
+        for (Materia materia : user.getMaterias()) {
+            int minutos = minutosPorMateria.getOrDefault(materia.getNome(), 0);
+            if (minutos < minutosMenor) {
+                minutosMenor = minutos;
+                menosEstudada = materia;
+            }
+        }
+
+        Tarefa prioridade = null;
+        for (Tarefa tarefa : user.getTarefas()) {
+            if (tarefa.isConcluido()) continue;
+            if (prioridade == null) {
+                prioridade = tarefa;
+            } else if (tarefa.getPrioridade() > prioridade.getPrioridade() ||
+                    (tarefa.getPrioridade() == prioridade.getPrioridade() && tarefa.getPrazo().before(prioridade.getPrazo()))) {
+                prioridade = tarefa;
+            }
+        }
+
+        ProvaAgenda proximaProva = null;
+        for (Materia materia : user.getMaterias()) {
+            for (Prova prova : materia.getProvas()) {
+                if (proximaProva == null || prova.getData().before(proximaProva.prova.getData())) {
+                    proximaProva = new ProvaAgenda(materia, prova);
+                }
+            }
+        }
+
+        System.out.println("===== SUGESTÃO DE ROTINA =====");
+
+        if (menosEstudada != null) {
+            double horasEstudadas = minutosMenor / 60.0;
+            System.out.printf("1) Comece revisando %s (estudada por apenas %.2f h). Reserve um bloco de 50 minutos.\n", menosEstudada.getNome(), horasEstudadas);
+        }
+
+        if (prioridade != null) {
+            System.out.printf("2) Em seguida, finalize a tarefa de maior prioridade: %s (prioridade %d, prazo %s).\n", prioridade.getDescricao(), prioridade.getPrioridade(), sdf.format(prioridade.getPrazo()));
+        }
+
+        if (proximaProva != null) {
+            System.out.printf("3) Dedique tempo extra para a prova de %s em %s: faça um simulado curto e revise anotações.\n", proximaProva.materia.getNome(), sdf.format(proximaProva.prova.getData()));
+        }
+
+        if (menosEstudada == null && prioridade == null && proximaProva == null) {
+            System.out.println("Nenhum dado suficiente para sugerir uma rotina. Cadastre provas, tarefas ou sessões de estudo.");
+        }
+    }
+
+    private static void compartilharCronograma(Usuario user) {
+        StringBuilder cronograma = new StringBuilder();
+        cronograma.append("===== CRONOGRAMA PARA COMPARTILHAR =====\n");
+        cronograma.append("Usuário: ").append(user.getEmail()).append("\n\n");
+
+        List<Tarefa> tarefasOrdenadas = new ArrayList<>(user.getTarefas());
+        tarefasOrdenadas.sort(Comparator.comparing(Tarefa::getPrazo));
+        if (tarefasOrdenadas.isEmpty()) {
+            cronograma.append("Tarefas: nenhuma cadastrada.\n");
+        } else {
+            cronograma.append("Tarefas:\n");
+            for (Tarefa t : tarefasOrdenadas) {
+                String status = t.isConcluido() ? "(concluída)" : "(pendente)";
+                cronograma.append(String.format("- %s | prazo: %s %s | prioridade: %d\n", t.getDescricao(), sdf.format(t.getPrazo()), status, t.getPrioridade()));
+            }
+        }
+
+        List<ProvaAgenda> provas = new ArrayList<>();
+        for (Materia materia : user.getMaterias()) {
+            for (Prova prova : materia.getProvas()) {
+                provas.add(new ProvaAgenda(materia, prova));
+            }
+        }
+        provas.sort(Comparator.comparing(p -> p.prova.getData()));
+
+        if (provas.isEmpty()) {
+            cronograma.append("\nProvas: nenhuma prova cadastrada.\n");
+        } else {
+            cronograma.append("\nProvas:\n");
+            for (ProvaAgenda agenda : provas) {
+                cronograma.append(String.format("- %s | %s em %s\n", agenda.materia.getNome(), agenda.prova.getDescricao(), sdf.format(agenda.prova.getData())));
+            }
+        }
+
+        System.out.println(cronograma);
+        System.out.println("Copie o bloco acima para compartilhar seu cronograma com colegas.");
+    }
+
+    private static class ProvaAgenda {
+        private final Materia materia;
+        private final Prova prova;
+
+        private ProvaAgenda(Materia materia, Prova prova) {
+            this.materia = materia;
+            this.prova = prova;
         }
     }
 

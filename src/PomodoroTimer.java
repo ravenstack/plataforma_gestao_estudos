@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.util.Scanner;
 
 public class PomodoroTimer {
@@ -30,12 +31,12 @@ public class PomodoroTimer {
             System.out.println("\n--- CICLO " + cicloAtual + " DE " + ciclos + " ---");
             System.out.println("Tempo de foco: " + focoMinutos + " minutos");
 
-            if (!contagemRegressivaComIntervalo(focoMinutos, sc)) break;
+            if (!contagemRegressivaComCancelamento(focoMinutos, sc)) break;
 
             if (cancelar) break;
 
             System.out.println("\nPausa de " + pausaMinutos + " minutos...");
-            if (!contagemRegressivaComIntervalo(pausaMinutos, sc)) break;
+            if (!contagemRegressivaComCancelamento(pausaMinutos, sc)) break;
         }
 
         if (!cancelar) {
@@ -43,11 +44,11 @@ public class PomodoroTimer {
         }
     }
 
-    // PERGUNTA SOMENTE A CADA 20 SEGUNDOS
-    private boolean contagemRegressivaComIntervalo(int minutos, Scanner sc) {
+    private boolean contagemRegressivaComCancelamento(int minutos, Scanner sc) {
 
         int totalSegundos = minutos * 60;
-        int intervaloPergunta = 20; // PERGUNTAR A CADA 20 SEGUNDOS
+
+        System.out.println("Digite 'c' e pressione Enter a qualquer momento para cancelar o ciclo (ele não será contabilizado).");
 
         while (totalSegundos > 0 && !cancelar) {
 
@@ -63,23 +64,34 @@ public class PomodoroTimer {
 
             totalSegundos--;
 
-            // de 20 em 20 segundos → perguntar
-            if (totalSegundos % intervaloPergunta == 0 && totalSegundos > 0) {
-
-                System.out.print("\nDeseja encerrar o Pomodoro? (s/n): ");
-                String r = sc.nextLine().trim().toLowerCase();
-
-                if (r.equals("s")) {
-                    cancelar = true;
-                    return false;
-                }
+            if (verificarCancelamento(sc)) {
+                break;
             }
         }
 
-        if (!cancelar) {
-            System.out.println("\n⏰ Tempo encerrado!");
+        if (cancelar) {
+            System.out.println("\nPomodoro cancelado pelo usuário. Este ciclo não será contabilizado.");
+            return false;
         }
 
-        return !cancelar;
+        System.out.println("\n⏰ Tempo encerrado!");
+        return true;
+    }
+
+    private boolean verificarCancelamento(Scanner sc) {
+        try {
+            if (System.in.available() > 0) {
+                String r = sc.nextLine().trim().toLowerCase();
+
+                if (r.equals("c")) {
+                    cancelar = true;
+                    return true;
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("\nNão foi possível ler o comando de cancelamento. Continue acompanhando manualmente o ciclo.");
+        }
+
+        return false;
     }
 }
