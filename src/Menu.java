@@ -11,6 +11,7 @@ public class Menu {
     static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
     private static void prtMenuLogin(){
+        clearScreen();
         System.out.println("\n===== BEM-VINDO =====");
         System.out.println("1. Já tenho conta (Login)");
         System.out.println("2. Cadastrar nova conta");
@@ -19,6 +20,7 @@ public class Menu {
     }
 
     private static void prtMainMenu(){
+        clearScreen();
         System.out.println("\n===== MENU PRINCIPAL =====");
         System.out.println("1. Cadastrar matéria");
         System.out.println("2. Adicionar tarefa");
@@ -39,6 +41,7 @@ public class Menu {
 
         int escolha = sc.nextInt();
         sc.nextLine(); // Limpar buffer
+        clearScreen();
 
         return switch (escolha) {
             case 1 ->
@@ -65,6 +68,7 @@ public class Menu {
         int opcao = sc.nextInt();
         sc.nextLine();
 
+        clearScreen();
         return switch (opcao) {
             case 1 -> {
                 cadMateria(user);
@@ -450,7 +454,7 @@ private static void concluirTarefa(Usuario user) {
 
         List<ProvaAgenda> provas = new ArrayList<>();
         for (Materia materia : user.getMaterias()) {
-            for (Prova prova : materia.getProvas()) {
+            for (Prova prova : materia.getProvas()) {A
                 provas.add(new ProvaAgenda(materia, prova));
             }
         }
@@ -459,6 +463,7 @@ private static void concluirTarefa(Usuario user) {
         if (provas.isEmpty()) {
             cronograma.append("\nProvas: nenhuma prova cadastrada.\n");
         } else {
+            else {
             cronograma.append("\nProvas:\n");
             for (ProvaAgenda agenda : provas) {
                 cronograma.append(String.format("- %s | %s em %s\n", agenda.materia.getNome(), agenda.prova.getDescricao(), sdf.format(agenda.prova.getData())));
@@ -480,19 +485,39 @@ private static void concluirTarefa(Usuario user) {
     }
 
     private static Usuario cadUsr(){
-        System.out.print("Digite um novo email: ");
-        String novoEmail = sc.nextLine();
+        String novoEmail;
+        do {
+            System.out.print("Digite um novo email: ");
+            novoEmail = sc.nextLine().trim();
+            if (!Usuario.isEmailValido(novoEmail)) {
+                System.out.println("Email inválido. Use um formato como usuario@dominio.com.");
+            }
+        } while (!Usuario.isEmailValido(novoEmail));
 
-        System.out.print("Digite uma nova senha: ");
-        String novaSenha = sc.nextLine();
+        String novaSenha;
+        do {
+            System.out.print("Digite uma nova senha (8+ caracteres, maiúscula, minúscula, número e símbolo): ");
+            novaSenha = sc.nextLine();
+            java.util.List<String> motivos = Usuario.motivosSenhaFraca(novaSenha);
+            if (!motivos.isEmpty()) {
+                System.out.println("Senha fraca. Ajuste conforme os pontos abaixo:");
+                motivos.forEach(motivo -> System.out.println("- " + motivo));
+            }
+        } while (!Usuario.isSenhaForte(novaSenha));
 
         System.out.println("Conta criada com sucesso!");
         return new Usuario(novoEmail, novaSenha);
     }
 
     private static Usuario logUsr(){
+        String loginEmail;
         System.out.print("Digite seu email: ");
-        String loginEmail = sc.nextLine();
+        loginEmail = sc.nextLine().trim();
+
+        if (!Usuario.isEmailValido(loginEmail)) {
+            System.out.println("Formato de email inválido.");
+            return null;
+        }
 
         System.out.print("Digite sua senha: ");
         String loginSenha = sc.nextLine();
@@ -513,6 +538,7 @@ private static void concluirTarefa(Usuario user) {
     }
 
     public static void sair(){
+        System.out.println("\nObrigado por usar o Sistema de Gestão de Estudos. Até a próxima!");
         sc.close();
     }
 }

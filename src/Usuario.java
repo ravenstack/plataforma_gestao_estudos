@@ -21,6 +21,27 @@ public class Usuario {
         this.sessoes = new ArrayList<>();
     }
 
+    public static boolean isEmailValido(String email) {
+        if (email == null || email.isBlank()) {
+            return false;
+        }
+        String padrao = "^[\\w!#$%&'*+/=?`{|}~^.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
+        return email.matches(padrao);
+    }
+
+    public static boolean isSenhaForte(String senha) {
+        if (senha == null || senha.length() < 8) {
+            return false;
+        }
+
+        boolean temMaiuscula = senha.chars().anyMatch(Character::isUpperCase);
+        boolean temMinuscula = senha.chars().anyMatch(Character::isLowerCase);
+        boolean temNumero = senha.chars().anyMatch(Character::isDigit);
+        boolean temEspecial = senha.matches(".*[!@#$%^&*()\\-_=+\\[\\]{};:'\\\"|,.<>/?].*");
+
+        return temMaiuscula && temMinuscula && temNumero && temEspecial;
+    }
+
     public void initMateriasPadrao(){
         String[] materiasPadrao = {
                 "Matemática",
