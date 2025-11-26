@@ -5,10 +5,16 @@ import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.text.ParseException; 
 
 public class Menu {
     static Scanner sc = new Scanner(System.in);
     static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+
+    public static void clearScreen() {
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
+    }
 
     private static void prtMenuLogin(){
         clearScreen();
@@ -38,20 +44,26 @@ public class Menu {
 
     public static Usuario logMenu(){
         prtMenuLogin();
-
-        int escolha = sc.nextInt();
-        sc.nextLine(); // Limpar buffer
-        clearScreen();
+        int escolha;
+        if (sc.hasNextInt()) {
+            escolha = sc.nextInt();
+            sc.nextLine(); // limpar buffer
+            clearScreen();
+        } else {
+            sc.nextLine(); // limpa o buffer de entrada inválida
+            clearScreen();
+            System.out.println("Opção inválida! Digite um número.");
+            return null;
+        }
 
         return switch (escolha) {
             case 1 ->
-                // LOGIN COM USUÁRIO PADRÃO
                     logUsr();
             case 2 ->
-                // CADASTRO DE NOVO USUÁRIO
                     cadUsr();
             case 0 -> {
                 System.out.println("Encerrando...");
+                sc.close();
                 System.exit(0);
                 yield null;
             }
@@ -65,10 +77,19 @@ public class Menu {
     public static boolean mainMenu(Usuario user){
         prtMainMenu();
 
-        int opcao = sc.nextInt();
-        sc.nextLine();
+        int opcao;
+        if (sc.hasNextInt()) {
+            opcao = sc.nextInt();
+            sc.nextLine(); // Limpar buffer
+            clearScreen();
+        } else {
+            sc.nextLine(); // Limpa o buffer de entrada inválida
+            clearScreen();
+            System.out.println("Opção inválida! Digite um número.");
+            return true;
+        }
 
-        clearScreen();
+
         return switch (opcao) {
             case 1 -> {
                 cadMateria(user);
@@ -138,14 +159,22 @@ public class Menu {
         Date prazo = null;
         try {
             prazo = sdf.parse(prazoStr);
-        } catch (Exception e) {
+        } catch (ParseException e) { 
             System.out.println("Formato inválido! Voltando ao menu.");
             return;
         }
 
         System.out.print("Prioridade (1-5): ");
-        int prio = sc.nextInt();
-        sc.nextLine();
+
+        int prio;
+        if (sc.hasNextInt()) {
+            prio = sc.nextInt();
+            sc.nextLine();
+        } else {
+            sc.nextLine();
+            System.out.println("Prioridade inválida. Voltando ao menu.");
+            return;
+        }
 
         Tarefa t = new Tarefa(descricao, prazo, prio);
         user.addTarefa(t);
@@ -163,8 +192,16 @@ public class Menu {
             System.out.println((i + 1) + ". " + user.getMaterias().get(i).getNome());
         }
 
-        int idx = sc.nextInt();
-        sc.nextLine();
+ 
+        int idx;
+        if (sc.hasNextInt()) {
+            idx = sc.nextInt();
+            sc.nextLine();
+        } else {
+            sc.nextLine();
+            System.out.println("Opção inválida. Voltando ao menu.");
+            return;
+        }
 
         if (idx < 1 || idx > user.getMaterias().size()) {
             System.out.println("Matéria inválida. Voltando ao menu.");
@@ -174,8 +211,15 @@ public class Menu {
         Materia materiaSessao = user.getMaterias().get(idx - 1);
 
         System.out.print("Duração da sessão (min): ");
-        int dur = sc.nextInt();
-        sc.nextLine();
+        int dur;
+        if (sc.hasNextInt()) {
+            dur = sc.nextInt();
+            sc.nextLine();
+        } else {
+            sc.nextLine();
+            System.out.println("Duração inválida. Voltando ao menu.");
+            return;
+        }
 
         if (dur <= 0) {
             System.out.println("Duração inválida. Voltando ao menu.");
@@ -200,8 +244,15 @@ public class Menu {
             System.out.println((i + 1) + ". " + user.getMaterias().get(i).getNome());
         }
 
-        int materiaIdx = sc.nextInt();
-        sc.nextLine();
+        int materiaIdx;
+        if (sc.hasNextInt()) {
+            materiaIdx = sc.nextInt();
+            sc.nextLine();
+        } else {
+            sc.nextLine();
+            System.out.println("Opção inválida. Voltando ao menu.");
+            return;
+        }
 
         if (materiaIdx < 1 || materiaIdx > user.getMaterias().size()) {
             System.out.println("Matéria inválida.");
@@ -219,7 +270,7 @@ public class Menu {
         Date dataProva;
         try {
             dataProva = sdf.parse(dataProvaStr);
-        } catch (Exception e) {
+        } catch (ParseException e) { 
             System.out.println("Formato inválido!");
             return;
         }
@@ -230,16 +281,37 @@ public class Menu {
 
     private static void initPomodoro(){
         System.out.print("Minutos de foco por ciclo: ");
-        int foco = sc.nextInt();
-        sc.nextLine();
+        int foco;
+        if (sc.hasNextInt()) {
+            foco = sc.nextInt();
+            sc.nextLine();
+        } else {
+            sc.nextLine();
+            System.out.println("Valor inválido. Voltando ao menu.");
+            return;
+        }
 
         System.out.print("Minutos de pausa por ciclo: ");
-        int pausa = sc.nextInt();
-        sc.nextLine();
+        int pausa;
+        if (sc.hasNextInt()) {
+            pausa = sc.nextInt();
+            sc.nextLine();
+        } else {
+            sc.nextLine();
+            System.out.println("Valor inválido. Voltando ao menu.");
+            return;
+        }
 
         System.out.print("Número de ciclos: ");
-        int ciclos = sc.nextInt();
-        sc.nextLine();
+        int ciclos;
+        if (sc.hasNextInt()) {
+            ciclos = sc.nextInt();
+            sc.nextLine();
+        } else {
+            sc.nextLine();
+            System.out.println("Valor inválido. Voltando ao menu.");
+            return;
+        }
 
         try {
             PomodoroTimer timer = new PomodoroTimer(foco, pausa, ciclos);
@@ -264,7 +336,7 @@ public class Menu {
                                 "Prioridade: " + tarefa.getPrioridade() +
                                         " | Descrição: " + tarefa.getDescricao() +
                                         " | Prazo: " + sdf.format(tarefa.getPrazo()) +
-                                        " | Concluída: " + tarefa.isConcluido()
+                                        " | Concluída: " + (tarefa.isConcluido() ? "Sim" : "Não")
                         );
                     });
         }
@@ -321,8 +393,15 @@ private static void concluirTarefa(Usuario user) {
         }
 
         System.out.print("Digite o número da tarefa para concluir: ");
-        int escolha = sc.nextInt();
-        sc.nextLine();
+        int escolha;
+        if (sc.hasNextInt()) {
+            escolha = sc.nextInt();
+            sc.nextLine();
+        } else {
+            sc.nextLine();
+            System.out.println("Opção inválida. Voltando ao menu.");
+            return;
+        }
 
         if (escolha < 1 || escolha > indicesPendentes.size()) {
             System.out.println("Opção inválida. Voltando ao menu.");
@@ -454,7 +533,7 @@ private static void concluirTarefa(Usuario user) {
 
         List<ProvaAgenda> provas = new ArrayList<>();
         for (Materia materia : user.getMaterias()) {
-            for (Prova prova : materia.getProvas()) {A
+            for (Prova prova : materia.getProvas()) {
                 provas.add(new ProvaAgenda(materia, prova));
             }
         }
@@ -463,7 +542,6 @@ private static void concluirTarefa(Usuario user) {
         if (provas.isEmpty()) {
             cronograma.append("\nProvas: nenhuma prova cadastrada.\n");
         } else {
-            else {
             cronograma.append("\nProvas:\n");
             for (ProvaAgenda agenda : provas) {
                 cronograma.append(String.format("- %s | %s em %s\n", agenda.materia.getNome(), agenda.prova.getDescricao(), sdf.format(agenda.prova.getData())));
@@ -498,13 +576,11 @@ private static void concluirTarefa(Usuario user) {
         do {
             System.out.print("Digite uma nova senha (8+ caracteres, maiúscula, minúscula, número e símbolo): ");
             novaSenha = sc.nextLine();
-            java.util.List<String> motivos = Usuario.motivosSenhaFraca(novaSenha);
-            if (!motivos.isEmpty()) {
-                System.out.println("Senha fraca. Ajuste conforme os pontos abaixo:");
-                motivos.forEach(motivo -> System.out.println("- " + motivo));
+            if (!Usuario.isSenhaForte(novaSenha)) {
+                System.out.println("Senha fraca. A senha deve ter 8+ caracteres, maiúscula, minúscula, número e símbolo.");
             }
         } while (!Usuario.isSenhaForte(novaSenha));
-
+        
         System.out.println("Conta criada com sucesso!");
         return new Usuario(novoEmail, novaSenha);
     }
@@ -513,11 +589,6 @@ private static void concluirTarefa(Usuario user) {
         String loginEmail;
         System.out.print("Digite seu email: ");
         loginEmail = sc.nextLine().trim();
-
-        if (!Usuario.isEmailValido(loginEmail)) {
-            System.out.println("Formato de email inválido.");
-            return null;
-        }
 
         System.out.print("Digite sua senha: ");
         String loginSenha = sc.nextLine();
@@ -538,6 +609,7 @@ private static void concluirTarefa(Usuario user) {
     }
 
     public static void sair(){
+        //  adicionar mensagem de saída amigável
         System.out.println("\nObrigado por usar o Sistema de Gestão de Estudos. Até a próxima!");
         sc.close();
     }
