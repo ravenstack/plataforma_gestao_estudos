@@ -1,0 +1,39 @@
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Maven
+target/
+*.jar
+*.war
+*.ear
+.mvn/wrapper/maven-wrapper.jar
+.mvn/wrapper/maven-wrapper.properties
+
+# Build
+*.class
+*.classpath
+.project
+.settings/
+bin/
+
+# Dependency
+dependency-reduced-pom.xml
+
+# Logs
+logs/
+*.log
+
+# Environment
+.env
+.env.local
+application-*.properties
+
+# Misc
+*.iml
+*.iws
+*.ipr
