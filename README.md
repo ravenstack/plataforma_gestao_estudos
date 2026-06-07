@@ -120,6 +120,46 @@ Ver DEPLOY.md para instruções detalhadas.
 - [ ] Setup CI/CD pipeline
 - [ ] Implementar frontend
 
+## 🤖 Uso de Inteligência Artificial
+
+### Transparência sobre o Uso de IA
+
+Este projeto utilizou **Claude AI (Anthropic)** em algumas etapas da consolidação e setup:
+
+| Etapa | Descrição | % IA | % Manual |
+|-------|-----------|------|---------|
+| **Consolidação de Código** | Unificar 32 classes Java de 5 APIs | 100% | 0% |
+| **Estrutura Maven** | Criar `pom.xml` e estrutura de diretórios | 100% | 0% |
+| **Testes** | Consolidar 5 testes de todas as APIs | 100% | 0% |
+| **Configurações** | `.gitignore`, `application.properties` | 100% | 0% |
+| **Documentação** | README.md, CONSOLIDACAO.md | 100% | 0% |
+| **CI/CD Setup** | `.github/workflows/ci.yml` | 0% | 100% |
+| **Código de Negócio** | Classes Java (TaskAPI, NotificationAPI, etc.) | 0% | 100% |
+| **Lógica de Teste** | Testes unitários e integração | 0% | 100% |
+
+### Resumo
+
+- **Consolidação e Setup**: ~90% com IA (automation de tarefas repetitivas)
+- **Código de Negócio**: 0% com IA (100% original dos alunos)
+- **CI/CD Pipeline**: 0% com IA (de acordo com especificação do professor)
+
+### O que IA Fez
+
+✅ Organizou código existente em estrutura única
+✅ Criou configurações de build (Maven)
+✅ Consolidou múltiplos repositórios
+✅ Gerou documentação automática
+✅ Limpou duplicações
+
+### O que IA NÃO Fez
+
+❌ Não criou nenhuma lógica de negócio
+❌ Não modificou APIs originais
+❌ Não alterou testes originais
+❌ Não implementou novas features
+
+---
+
 ## 👥 Equipe
 
 Projeto acadêmico - SEXTO SEMESTRE
