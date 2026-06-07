@@ -6,21 +6,51 @@ Sistema de microserviços consolidado para gerenciamento acadêmico e técnicas 
 
 ```
 PAES/
-├── pom.xml                          # Configuração Maven
-├── src/
-│   ├── main/
-│   │   ├── java/com/gestaoestudo/
-│   │   │   ├── taskapi/            # API de Tarefas
-│   │   │   ├── notificacaoapi/     # API de Notificações
-│   │   │   ├── pomodoroapi/        # API de Técnica Pomodoro
-│   │   │   ├── identifyapi/        # API de Identificação/Autenticação
-│   │   │   ├── academicapi/        # API de Gerenciamento Acadêmico
-│   │   │   └── common/             # Código compartilhado
-│   │   └── resources/              # Configurações
-│   └── test/java/                  # Testes
-├── .gitignore
-├── README.md
-└── DEPLOY.md                        # Instruções de deployment
+├── Backend (Java/Spring Boot)
+│   ├── pom.xml                          # Configuração Maven
+│   ├── src/
+│   │   ├── main/
+│   │   │   ├── java/com/gestaoestudo/
+│   │   │   │   ├── taskapi/            # API de Tarefas
+│   │   │   │   ├── notificacaoapi/     # API de Notificações
+│   │   │   │   ├── pomodoroapi/        # API de Técnica Pomodoro
+│   │   │   │   ├── identifyapi/        # API de Identificação/Autenticação
+│   │   │   │   ├── academicapi/        # API de Gerenciamento Acadêmico
+│   │   │   │   └── common/             # Código compartilhado
+│   │   │   └── resources/              # Configurações
+│   │   └── test/java/                  # Testes
+│   ├── Dockerfile                       # Multi-stage build
+│   ├── docker-compose.yml               # Orquestração
+│   ├── .github/workflows/ci.yml         # CI/CD Pipeline
+│   └── README.md                        # Docs backend
+│
+└── Frontend (React/Vite)
+    ├── frontend/
+    │   ├── src/
+    │   │   ├── components/
+    │   │   │   ├── MainLayout.jsx
+    │   │   │   └── Sidebar.jsx
+    │   │   ├── pages/
+    │   │   │   ├── LoginPage.jsx
+    │   │   │   ├── RegisterPage.jsx
+    │   │   │   ├── DashboardPage.jsx
+    │   │   │   ├── TarefasPage.jsx
+    │   │   │   ├── DisciplinasPage.jsx
+    │   │   │   ├── PomodoroPage.jsx
+    │   │   │   └── ConfigPage.jsx
+    │   │   ├── services/
+    │   │   │   └── api.js
+    │   │   ├── App.jsx
+    │   │   └── main.jsx
+    │   ├── package.json
+    │   ├── vite.config.js
+    │   ├── tailwind.config.js
+    │   └── README.md                    # Docs frontend
+    │
+    └── Documentação
+        ├── FRONTEND_REQUIREMENTS.md     # Specs do frontend
+        ├── DOCKER.md                    # Setup Docker
+        └── CONSOLIDACAO.md              # Processo de consolidação
 ```
 
 ## 🚀 Quick Start
@@ -91,13 +121,39 @@ server.port=8080
 
 ### Testes: 5 testes
 
-## 🌐 Frontend Integration
+## 🌐 Frontend - React + Vite
 
-Para integrar com o frontend:
-1. Certificar que todas as APIs estão rodando
-2. Configurar CORS em cada controller
-3. Documentar endpoints REST
-4. Usar ferramentas como Swagger/OpenAPI para documentação
+### Estrutura
+- **Framework**: React 18 + Vite
+- **Styling**: Tailwind CSS com tema customizado
+- **Roteamento**: React Router v6
+- **HTTP**: Axios com interceptors
+- **Ícones**: Lucide Icons
+
+### Páginas Incluídas
+✅ Login/Cadastro com JWT
+✅ Dashboard com estatísticas
+✅ CRUD de Tarefas
+✅ CRUD de Disciplinas (com cores)
+✅ Timer Pomodoro (25/5/15 minutos)
+✅ Configurações de notificações
+✅ Menu responsivo (mobile/desktop)
+
+### Quick Start Frontend
+```bash
+cd frontend
+npm install
+npm run dev          # http://localhost:3000
+```
+
+### Build para Produção
+```bash
+npm run build        # Gera: dist/
+```
+
+### Documentação
+- Ver `frontend/README.md` para detalhes completos
+- Ver `FRONTEND_REQUIREMENTS.md` para specs das APIs
 
 ## 📦 Build & Deployment
 
