@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="VcsDirectoryMappings">
+    <mapping directory="$PROJECT_DIR$/NotificationAPI" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/TaskAPI" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/prjPAES-academicAPI" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/prjPAES-identifyAPI" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/prjPAES-pomodoroAPI" vcs="Git" />
+  </component>
+</project>
