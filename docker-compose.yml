@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  paes-platform:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: paes-platform
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_APPLICATION_NAME=paes-platform
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_DATASOURCE_URL=jdbc:h2:mem:testdb
+      - SPRING_H2_CONSOLE_ENABLED=true
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
