@@ -33,6 +33,12 @@ logs/
 .env.local
 application-*.properties
 
+# H2 Database files
+data/
+*.db
+*.mv.db
+*.trace.db
+
 # Misc
 *.iml
 *.iws
