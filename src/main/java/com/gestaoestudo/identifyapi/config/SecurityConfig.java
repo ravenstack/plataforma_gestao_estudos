@@ -47,10 +47,10 @@ public class SecurityConfig {
                 // 2. Permite que o H2 apareça dentro de frames
                 .headers(headers -> headers.frameOptions(frame -> frame.disable()))
 
-                // 3. Libera os caminhos necessários
+                // 3. MODO DESENVOLVIMENTO: libera TODAS as rotas (sem frontend enviando token)
+                //    Para producao, troque por regras especificas + .httpBasic() ou JWT.
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**", "/h2-console/**", "/academic/**", "/tarefas/**", "/pomodoro/**", "/notifications/**").permitAll()
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
                 );
 
         return http.build();
