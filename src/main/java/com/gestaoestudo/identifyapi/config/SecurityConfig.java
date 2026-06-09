@@ -28,7 +28,7 @@ public class SecurityConfig {
 
                 // 3. Libera os caminhos necessários
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/register", "/auth/all", "/h2-console/**").permitAll()
+                        .requestMatchers("/", "/favicon.ico", "/auth/register", "/auth/all", "/h2-console/**").permitAll()
                         .anyRequest().authenticated()
                 );
 
