@@ -1,13 +1,11 @@
-package com.gestaoestudo.notificacaoapi;
+package com.gestaoestudo;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class NotificacaoApiApplication {
-
+public class PaesApplication {
     public static void main(String[] args) {
-        SpringApplication.run(NotificacaoApiApplication.class, args);
+        SpringApplication.run(PaesApplication.class, args);
     }
-
 }
